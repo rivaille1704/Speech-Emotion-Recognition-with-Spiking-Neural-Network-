@@ -3,10 +3,6 @@
 ## Overview
 This repository contains the implementation of a hybrid Speech Emotion Recognition (SER) framework that combines Convolutional Neural Networks (CNNs) with Spiking Neural Networks (SNNs). Traditional SER systems relying solely on deep learning models often require high computational power, limiting their deployment on edge devices. By integrating CNN-based feature extraction with an SNN back-end utilizing Leaky Integrate-and-Fire (LIF) neurons, this project offers an energy-efficient, biologically plausible alternative suitable for neuromorphic hardware platforms.
 
-## Authors
-* **Le Hoang Viet** - University of Information Technology
-* **Hoang Cong Chien** - University of Information Technology
-
 ## Datasets
 The model is evaluated on a harmonized dataset constructed from four benchmark emotional speech corpora:
 * **Sources**: RAVDESS, TESS, CREMA-D, and SAVEE.
