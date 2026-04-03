@@ -33,9 +33,9 @@ Dự án được xây dựng và huấn luyện trên GPU NVIDIA RTX 3090. Các
 
 ```bash
 # Clone the repository
-git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-cd your-repo-name
+git clone https://github.com/rivaille1704/Speech-Emotion-Recognition-with-Spiking-Neural-Network-.git
+cd Speech-Emotion-Recognition-with-Spiking-Neural-Network-
 
-# Cài đặt các thư viện yêu cầu
+# Install required dependencies
 pip install torch torchvision torchaudio
-pip install snntorch librosa numpy pandas scikit-learn
+pip install snntorch numpy pandas scikit-learn librosa
