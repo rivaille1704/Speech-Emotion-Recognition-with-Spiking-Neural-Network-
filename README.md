@@ -1,35 +1,42 @@
-# 🎙️ Speech Emotion Recognition with Spiking Neural Network (SER-SNN)
+# Speech Emotion Recognition with Spiking Neural Networks
 
-## 📌 Giới thiệu (Overview)
-Dự án này đề xuất một mô hình lai giữa **Mạng nơ-ron tích chập (CNN)** và **Mạng nơ-ron xung (SNN)** để giải quyết bài toán Nhận dạng Cảm xúc qua Giọng nói (Speech Emotion Recognition - SER). 
+## Overview
+[cite_start]This repository contains the implementation of a hybrid Speech Emotion Recognition (SER) framework that combines Convolutional Neural Networks (CNNs) with Spiking Neural Networks (SNNs)[cite: 9]. [cite_start]Traditional SER systems relying solely on deep learning models often require high computational power, limiting their deployment on edge devices[cite: 7]. [cite_start]By integrating CNN-based feature extraction with an SNN back-end utilizing Leaky Integrate-and-Fire (LIF) neurons, this project offers an energy-efficient, biologically plausible alternative suitable for neuromorphic hardware platforms[cite: 8, 13, 60].
 
-Mô hình tận dụng sức mạnh của CNN trong việc trích xuất đặc trưng và SNN (sử dụng nơ-ron Leaky Integrate-and-Fire) cho bước phân loại cuối cùng. Giải pháp này không chỉ duy trì độ chính xác cao mà còn giảm thiểu số lượng phép toán dấu phẩy động (FLOPs), mang lại hiệu quả năng lượng vượt trội và phù hợp để triển khai trên các phần cứng Neuromorphic.
+## Authors
+* [cite_start]**Le Hoang Viet** - University of Information Technology [cite: 3, 4]
+* [cite_start]**Hoang Cong Chien** - University of Information Technology [cite: 5]
 
-## 👥 Nhóm phát triển (Team)
-Dự án thuộc lớp **CS338_P22**, **Nhóm 7** - Trường Đại học Công nghệ Thông tin (UIT):
-* **Lê Hoàng Việt**
-* **Hoàng Công Chiến**
+## Datasets
+[cite_start]The model is evaluated on a harmonized dataset constructed from four benchmark emotional speech corpora[cite: 12]:
+* [cite_start]**Sources**: RAVDESS, TESS, CREMA-D, and SAVEE[cite: 12].
+* [cite_start]**Emotion Classes**: Data is standardized into five categories: Neutral, Happy, Sad, Angry, and Fearful[cite: 92, 93, 94, 95].
+* [cite_start]**Volume**: The final dataset comprises 10,580 balanced audio samples[cite: 110, 111]. [cite_start]All audio is resampled to 16kHz, amplitude-normalized, and trimmed/padded to a uniform 3-second duration[cite: 100, 101, 102].
 
-## 📊 Tập dữ liệu (Datasets)
-Mô hình được huấn luyện và đánh giá trên 4 tập dữ liệu cảm xúc giọng nói chuẩn:
-* **Nguồn**: RAVDESS, TESS, CREMA-D, và SAVEE.
-* **Nhãn cảm xúc**: Dữ liệu được đồng nhất về 5 nhãn chung: **Neutral, Happy, Sad, Angry, Fearful**.
-* **Số lượng**: Tổng cộng 10.580 mẫu âm thanh (mỗi mẫu được chuẩn hóa độ dài 3 giây, 16kHz) đã qua làm sạch và cân bằng.
+## Feature Engineering
+[cite_start]The system utilizes a multi-dimensional acoustic feature representation to capture both spectral and prosodic characteristics[cite: 115]:
+* [cite_start]**Stacked Features**: Frame-wise concatenation of 13 Mel-Frequency Cepstral Coefficients (MFCCs), 1 Root Mean Square Energy (RMSE) descriptor, and 1 Zero-Crossing Rate (ZCR) descriptor[cite: 202].
+* [cite_start]**Input Shape**: The extraction pipeline yields a 15 x 299 feature matrix per audio clip[cite: 205].
 
-## 🧠 Kiến trúc mô hình (Architecture)
-Kiến trúc lai CNN-SNN trải qua các giai đoạn xử lý sau:
+## Model Architecture
+[cite_start]The hybrid architecture is structured into two main stages[cite: 402]:
 
-1. **Trích xuất đặc trưng (Feature Extraction)**: Trích xuất song song và kết hợp (Stacked) 13 hệ số MFCC, 1 hệ số năng lượng RMSE và 1 hệ số ZCR theo từng khung thời gian. Kích thước tensor đầu vào: `15 x 299`.
-2. **CNN Front-end**: Gồm 3 khối Conv2D (kernel `3x3`), kết hợp Batch Normalization, ReLU và Max Pooling (`2x2`) để trích xuất đặc trưng không gian - thời gian, sau đó làm phẳng thành vector 128 chiều.
-3. **Mã hóa xung (Spike Encoding)**: Chuyển đổi vector đặc trưng thành chuỗi xung nhị phân bằng phương pháp **Rate Coding**.
-4. **SNN Back-end (Phân loại)**: 3 lớp Fully Connected sử dụng mô hình nơ-ron Leaky Integrate-and-Fire (LIF), với số lượng nơ-ron giảm dần: `128 -> 64 -> 32 -> 5` (tương ứng 5 lớp cảm xúc).
+1. [cite_start]**CNN Front-end**: Three sequential convolutional blocks[cite: 406]. [cite_start]Each block applies a 2D Convolution (3x3 kernel), Batch Normalization, ReLU activation, and 2x2 Max Pooling to extract localized spatio-temporal patterns[cite: 407, 432, 451, 477]. [cite_start]The output is flattened into a 128-dimensional embedding[cite: 497].
+2. [cite_start]**Spike Encoding**: Continuous-valued features are converted into spike trains using Rate Coding[cite: 270, 499].
+3. [cite_start]**SNN Back-end**: A three-layer fully connected spiking network using LIF neurons, structured as 128 -> 64 -> 32 -> 5 neurons[cite: 501, 506, 536, 560, 562]. 
 
-## 📈 Kết quả nổi bật (Results)
-* **Đặc trưng tối ưu**: Việc kết hợp `MFCC + RMSE + ZCR` mang lại hiệu suất vượt trội (**71.9%**) so với việc chỉ dùng phương pháp MFCC thông thường.
-* **Độ chính xác**: Sau khi tinh chỉnh bằng Surrogate Gradient, mô hình lai SNN đạt **độ chính xác 87.8%**, chỉ kém mô hình CNN gốc 0.5% nhưng tiết kiệm năng lượng tính toán hơn rất nhiều.
+## Training Methodology
+[cite_start]Training SNNs from scratch presents challenges due to the non-differentiable nature of spike generation[cite: 597]. This project employs:
+* [cite_start]**Surrogate Gradient Descent**: Approximating the spike function derivative using a Fast Sigmoid Surrogate to enable backward passes[cite: 620, 623].
+* [cite_start]**Optimization**: Backpropagation Through Time (BPTT) coupled with the Adam optimizer[cite: 654, 804].
 
-## 🛠 Cài đặt & Môi trường (Installation)
-Dự án được xây dựng và huấn luyện trên GPU NVIDIA RTX 3090. Các thư viện cốt lõi bao gồm PyTorch và snnTorch.
+## Key Results
+* [cite_start]**Feature Superiority**: The stacked feature representation (MFCC + RMSE + ZCR) achieved 71.9% baseline accuracy, significantly outperforming the MFCC mean approach (63.3%)[cite: 809, 814, 815].
+* [cite_start]**Classification Accuracy**: The fine-tuned SNN model achieved an overall accuracy of 87.8%[cite: 821]. [cite_start]This is within 0.5% of the baseline CNN performance while drastically reducing floating-point operations[cite: 821, 823].
+
+## Installation
+
+[cite_start]The model is implemented in PyTorch using the `snnTorch` library[cite: 804]. 
 
 ```bash
 # Clone the repository
